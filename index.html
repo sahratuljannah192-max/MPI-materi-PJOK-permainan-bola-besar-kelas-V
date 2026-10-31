@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Sepak Bola - MPI PJOK Kelas V</title>
+<style>
+:root {
+  --site-primary: #126B4A;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #F2B544;
+  --site-on-secondary: #30230A;
+  --site-background: #F3F7F2;
+  --site-on-background: #17251F;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: light-dark(#FFFFFF, #1D2924);
+  --surface-soft: light-dark(#E8F1EB, #26372F);
+  --muted: light-dark(#64756C, #B0C0B7);
+  --line: light-dark(#DCE7DF, #3B4D43);
+  --good: #167B50;
+  --bad: #B54737;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--site-on-background); background: var(--site-background); font-family: var(--site-font-body); }
+button, input { font: inherit; }
+button { cursor: pointer; }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); border-radius: 0; overflow: hidden; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding: calc(15px * var(--site-spacing-scale)) clamp(16px,4vw,54px); background:var(--site-primary); color:var(--site-on-primary); }
+.brand { display:flex; align-items:center; gap:12px; font-weight:850; letter-spacing:-.02em; }
+.brand-mark { display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:var(--site-secondary); color:var(--site-on-secondary); font-size:23px; }
+.top-actions { display:flex; align-items:center; gap:9px; }
+.top-actions button { border:1px solid #ffffff55; color:white; background:#ffffff16; border-radius:999px; padding:9px 13px; }
+.layout { display:grid; grid-template-columns:245px minmax(0,1fr); max-width:1440px; margin:auto; min-height:calc(100vh - 70px); }
+.sidebar { padding:24px 16px; background:var(--surface); border-right:1px solid var(--line); }
+.learner { padding:15px; border-radius:calc(18px * var(--site-radius-scale)); background:var(--surface-soft); margin-bottom:22px; }
+.learner small { color:var(--muted); display:block; margin-bottom:8px; }
+.learner input { width:100%; padding:10px; border:1px solid var(--line); border-radius:10px; color:var(--site-on-background); background:var(--surface); }
+.nav { display:grid; gap:7px; }
+.nav button { border:0; border-radius:12px; padding:12px 13px; text-align:left; background:transparent; color:var(--site-on-background); font-weight:700; display:flex; gap:11px; align-items:center; }
+.nav button.active,.nav button:hover { background:var(--surface-soft); color:var(--site-primary); }
+.nav .ico { width:25px; text-align:center; font-size:18px; }
+.progress-box { margin-top:26px; padding:15px; border:1px solid var(--line); border-radius:16px; }
+.progress-line { height:8px; border-radius:99px; background:var(--surface-soft); overflow:hidden; margin:10px 0 6px; }
+.progress-line span { display:block; height:100%; width:0; background:var(--site-primary); transition:width .3s; }
+main { padding:clamp(20px,4vw,48px); max-width:1100px; width:100%; margin:auto; }
+.eyebrow { color:var(--good); text-transform:uppercase; font-weight:850; letter-spacing:.12em; font-size:11px; }
+h1,h2,h3 { font-family:var(--site-font-heading); letter-spacing:-.04em; }
+h1 { font-size:calc(clamp(30px,5vw,52px) * var(--site-heading-scale)); line-height:1.06; margin:12px 0; }
+h2 { font-size:calc(30px * var(--site-heading-scale)); margin:8px 0 12px; }
+h3 { font-size:calc(20px * var(--site-heading-scale)); margin:8px 0; }
+p { line-height:1.7; color:var(--muted); }
+.hero { position:relative; overflow:hidden; border-radius:calc(26px * var(--site-radius-scale)); padding:clamp(25px,5vw,55px); background:linear-gradient(120deg,var(--site-primary),#0D4936); color:white; display:grid; grid-template-columns:1.3fr .7fr; gap:20px; align-items:center; }
+.hero p { color:#E2F0E7; max-width:550px; }
+.hero .eyebrow { color:#F8D98C; }
+.hero-art { display:grid; place-items:center; min-height:190px; position:relative; }
+.ball { width:clamp(125px,17vw,190px); aspect-ratio:1; border-radius:50%; display:grid; place-items:center; font-size:clamp(80px,12vw,130px); background:#ffffff18; border:1px solid #ffffff44; filter:drop-shadow(0 18px 18px #001b1238); transform:rotate(-12deg); }
+.hero-art:after { content:""; position:absolute; width:240px; height:45px; border:2px solid #ffffff55; border-radius:50%; transform:rotate(-18deg); }
+.btn { border:0; border-radius:999px; padding:12px 19px; font-weight:800; background:var(--site-secondary); color:var(--site-on-secondary); box-shadow:0 5px 0 #9D6D1E55; }
+.btn.primary { background:var(--site-primary); color:white; box-shadow:none; }
+.btn.ghost { background:var(--surface-soft); color:var(--site-on-background); box-shadow:none; }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.section-head { display:flex; justify-content:space-between; align-items:end; gap:12px; margin:30px 0 15px; }
+.cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:calc(18px * var(--site-radius-scale)); padding:19px; box-shadow:0 5px 18px #173d2810; }
+.card-icon { width:48px; height:48px; border-radius:14px; display:grid; place-items:center; font-size:25px; background:var(--surface-soft); }
+.card p { font-size:14px; margin-bottom:0; }
+.pill { display:inline-flex; border-radius:99px; background:var(--surface-soft); padding:6px 10px; font-size:12px; font-weight:800; color:var(--site-primary); }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:calc(22px * var(--site-radius-scale)); padding:clamp(18px,3vw,30px); margin-top:18px; }
+.tabs { display:flex; gap:8px; flex-wrap:wrap; margin:18px 0; }
+.tabs button { border:1px solid var(--line); background:var(--surface); color:var(--site-on-background); border-radius:999px; padding:9px 14px; font-weight:750; }
+.tabs button.active { background:var(--site-primary); color:white; border-color:var(--site-primary); }
+.lesson-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch; }
+.lesson-visual { min-height:210px; border-radius:18px; background:linear-gradient(135deg,#D7EBDD,#A8D1B8); display:grid; place-items:center; font-size:clamp(80px,12vw,130px); }
+.lesson-copy ul { padding-left:20px; line-height:1.9; color:var(--muted); }
+.callout { background:#FFF5DA; color:#5A4211; padding:14px 16px; border-radius:14px; line-height:1.6; margin-top:14px; }
+.activity { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin:18px 0; }
+.activity-item { border:1px solid var(--line); border-radius:15px; padding:16px; background:var(--surface-soft); }
+.activity-item select,.quiz-option { width:100%; margin-top:10px; padding:11px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--site-on-background); }
+.feedback { padding:13px 15px; border-radius:12px; margin-top:14px; background:var(--surface-soft); color:var(--site-on-background); }
+.feedback.good { background:#E1F4E9; color:#145C39; }
+.feedback.bad { background:#FBE8E4; color:#8D3024; }
+.question { padding:19px; border:1px solid var(--line); border-radius:16px; margin:14px 0; background:var(--surface); }
+.option { display:flex; gap:10px; align-items:flex-start; padding:11px; border:1px solid var(--line); border-radius:12px; margin-top:8px; cursor:pointer; }
+.option:has(input:checked) { border-color:var(--site-primary); background:var(--surface-soft); }
+.option input { margin-top:4px; accent-color:var(--site-primary); }
+.result { text-align:center; padding:25px; border-radius:18px; background:var(--surface-soft); }
+.score { font-size:54px; font-weight:900; color:var(--site-primary); letter-spacing:-.06em; }
+.footer { text-align:center; color:var(--muted); font-size:12px; padding:30px 0 10px; }
+.hero { isolation:isolate; box-shadow:0 22px 55px #103c2b24; }
+.hero:before { content:""; position:absolute; z-index:-1; width:360px; height:360px; right:8%; top:-175px; border:1px solid #ffffff25; border-radius:50%; box-shadow:0 0 0 28px #ffffff0b,0 0 0 58px #ffffff09; }
+.hero:after { content:""; position:absolute; z-index:-1; width:42%; height:1px; right:0; bottom:25%; background:linear-gradient(90deg,transparent,#ffffff55,transparent); transform:rotate(-22deg); }
+.hero-art .ball { animation:floatBall 4s ease-in-out infinite; }
+@keyframes floatBall { 0%,100%{transform:translateY(0) rotate(-12deg)} 50%{transform:translateY(-10px) rotate(2deg)} }
+.welcome-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:18px 0 28px; }
+.welcome-stat { display:flex; align-items:center; gap:12px; padding:14px 16px; border:1px solid var(--line); border-radius:16px; background:var(--surface); }
+.welcome-stat b { display:block; font-size:15px; color:var(--site-on-background); }
+.welcome-stat small { color:var(--muted); }
+.welcome-stat span { display:grid; place-items:center; flex:0 0 42px; width:42px; height:42px; border-radius:13px; background:var(--surface-soft); font-size:21px; }
+.card { transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
+.card:hover { transform:translateY(-4px); border-color:var(--site-secondary); box-shadow:0 14px 28px #173d2818; }
+.btn { transition:transform .15s ease,filter .15s ease; }
+.btn:hover { transform:translateY(-2px); filter:brightness(1.04); }
+.lesson-visual { position:relative; overflow:hidden; background:radial-gradient(circle at 50% 42%,#F7FFF8 0 17%,transparent 18%),linear-gradient(135deg,#D7EBDD,#A8D1B8); }
+.lesson-visual:after { content:""; position:absolute; width:75%; height:38%; border:2px solid #ffffffa0; border-radius:50%; }
+.activity-item { transition:border-color .2s ease,transform .2s ease; }
+.activity-item:focus-within { border-color:var(--site-primary); transform:translateY(-2px); }
+.question { box-shadow:0 5px 18px #173d2808; }
+.result { border:1px solid var(--line); }
+.topbar { box-shadow:0 5px 18px #052e1d25; }
+.nav button { transition:background .18s ease,color .18s ease,transform .18s ease; }
+.nav button:hover { transform:translateX(3px); }
+.progress-line span { background:linear-gradient(90deg,var(--site-primary),#48A878); }
+.eyebrow { font-size:11px; }
+@media(max-width:560px) { .welcome-strip { grid-template-columns:1fr; gap:8px; } }
+.hide { display:none !important; }
+@media(max-width:850px) { .layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px 16px}.learner,.progress-box{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:10px}.nav .ico{display:none} main{padding:22px 16px}.hero{grid-template-columns:1fr}.hero-art{min-height:120px}.ball{width:120px}.cards{grid-template-columns:1fr 1fr} }
+@media(max-width:560px) { .cards,.lesson-grid,.activity{grid-template-columns:1fr}.topbar{padding:12px 15px}.brand{font-size:14px}.top-actions button{padding:8px;font-size:12px}.hero{padding:25px}.hero-art{display:none}.section-head{align-items:start;flex-direction:column} }
+</style>
+</head>
+<body>
+<div id="app">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">⚽</div><div>RUANG PJOK <span style="opacity:.7;font-weight:500">/ KELAS V</span></div></div>
+  <div class="top-actions"><button id="soundBtn" type="button" aria-label="Suara">♫ Suara: Mati</button><button type="button" id="homeBtn">⌂ Beranda</button></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="learner"><small>NAMA PETUALANG</small><input id="studentName" placeholder="Tulis namamu..." maxlength="30"></div>
+  <nav class="nav" aria-label="Navigasi utama">
+    <button class="active" data-page="home"><span class="ico">⌂</span>Beranda</button>
+    <button data-page="materi"><span class="ico">📖</span>Belajar Materi</button>
+    <button data-page="latihan"><span class="ico">🎯</span>Latihan Teknik</button>
+    <button data-page="kuis"><span class="ico">🏆</span>Kuis Hebat</button>
+    <button data-page="profil"><span class="ico">ℹ️</span>Petunjuk & Profil</button>
+  </nav>
+  <div class="progress-box"><strong>Perjalanan Belajarmu</strong><div class="progress-line"><span id="progressBar"></span></div><small id="progressText">0 dari 3 kegiatan selesai</small></div>
+</aside>
+<main>
+<section id="page-home" class="page">
+  <div class="hero">
+    <div><div class="eyebrow">MISI BELAJAR PJOK • FASE C</div><h1>Petualangan Seru Bermain Sepak Bola!</h1><p>Hai, pemain hebat! Yuk kenali teknik dasar sepak bola, berlatih mengambil keputusan, dan buktikan kemampuanmu lewat kuis seru.</p><button class="btn" data-go="materi">Mulai Petualangan →</button></div>
+    <div class="hero-art"><div class="ball">⚽</div></div>
+  </div>
+  <div class="welcome-strip" aria-label="Ringkasan pembelajaran"><div class="welcome-stat"><span>📘</span><div><b>5 bagian materi</b><small>Belajar bertahap</small></div></div><div class="welcome-stat"><span>⚽</span><div><b>4 teknik dasar</b><small>Kenali dan praktikkan</small></div></div><div class="welcome-stat"><span>🏅</span><div><b>5 soal tantangan</b><small>Ukur pemahamanmu</small></div></div></div>
+  <div class="section-head"><div><div class="eyebrow">PETA PETUALANGAN</div><h2>Siap jadi pemain cerdas?</h2></div><span class="pill">Kelas V • SD Negeri 8 Kodeoha</span></div>
+  <div class="cards">
+    <article class="card"><div class="card-icon">📚</div><h3>1. Kenali Permainan</h3><p>Pelajari tujuan permainan dan teknik dasar sepak bola.</p><button class="btn ghost" data-go="materi">Buka materi</button></article>
+    <article class="card"><div class="card-icon">👟</div><h3>2. Asah Teknik</h3><p>Cocokkan situasi permainan dengan teknik yang tepat.</p><button class="btn ghost" data-go="latihan">Mulai latihan</button></article>
+    <article class="card"><div class="card-icon">🏅</div><h3>3. Uji Hebatmu</h3><p>Jawab pertanyaan dan lihat hasil belajarmu.</p><button class="btn ghost" data-go="kuis">Kerjakan kuis</button></article>
+  </div>
+  <div class="panel"><div class="eyebrow">INGAT SELALU</div><h3>Menang itu menyenangkan, bermain jujur lebih membanggakan!</h3><p>Utamakan keselamatan, kerja sama, disiplin, dan sikap saling menghargai saat bermain.</p></div>
+</section>
+<section id="page-materi" class="page hide">
+  <div class="eyebrow">MODUL 01 • MARI BELAJAR</div><h1>Mengenal Sepak Bola</h1><p>Sepak bola adalah permainan bola besar yang dimainkan dua regu. Pemain berusaha mencetak gol ke gawang lawan dengan kerja sama dan mematuhi aturan.</p>
+  <div class="tabs" id="lessonTabs"><button class="active" data-lesson="tujuan">Tujuan permainan</button><button data-lesson="passing">Passing</button><button data-lesson="dribbling">Dribbling</button><button data-lesson="shooting">Shooting</button><button data-lesson="stopping">Stopping</button></div>
+  <div class="panel lesson-grid"><div class="lesson-visual" id="lessonEmoji">🥅</div><div class="lesson-copy"><span class="pill" id="lessonTag">DASAR PERMAINAN</span><h2 id="lessonTitle">Apa tujuan sepak bola?</h2><p id="lessonDesc">Memasukkan bola ke gawang lawan sebanyak mungkin dan menjaga gawang sendiri agar tidak kebobolan.</p><ul id="lessonPoints"><li>Bermain dalam dua regu.</li><li>Bekerja sama dan menaati aturan.</li><li>Menghormati teman dan lawan.</li></ul><button class="btn primary" id="nextLesson">Materi berikutnya →</button></div></div>
+  <div class="callout"><strong>Berpikir kritis:</strong> Mengapa pemain perlu bekerja sama dan mengoper bola kepada teman yang posisinya lebih baik?</div>
+  <div style="margin-top:18px"><button class="btn" id="finishMaterial">Saya sudah mempelajari materi ✓</button></div>
+</section>
+<section id="page-latihan" class="page hide">
+  <div class="eyebrow">MODUL 02 • COBA KEMAMPUANMU</div><h1>Detektif Teknik Sepak Bola</h1><p>Baca situasi berikut. Pilih teknik yang paling tepat untuk dilakukan pemain.</p>
+  <div class="activity">
+    <div class="activity-item"><div style="font-size:32px">🤝 ⚽</div><strong>Situasi A</strong><p>Rani mengirim bola kepada teman satu tim yang berada di dekatnya.</p><select id="actA"><option value="">Pilih teknik…</option><option value="passing">Passing</option><option value="dribbling">Dribbling</option><option value="shooting">Shooting</option><option value="stopping">Stopping</option></select></div>
+    <div class="activity-item"><div style="font-size:32px">🏃 ⚽</div><strong>Situasi B</strong><p>Bima membawa bola sambil berlari melewati beberapa lawan.</p><select id="actB"><option value="">Pilih teknik…</option><option value="passing">Passing</option><option value="dribbling">Dribbling</option><option value="shooting">Shooting</option><option value="stopping">Stopping</option></select></div>
+    <div class="activity-item"><div style="font-size:32px">🥅 ⚽</div><strong>Situasi C</strong><p>Siti menendang bola ke arah gawang untuk mencetak gol.</p><select id="actC"><option value="">Pilih teknik…</option><option value="passing">Passing</option><option value="dribbling">Dribbling</option><option value="shooting">Shooting</option><option value="stopping">Stopping</option></select></div>
+    <div class="activity-item"><div style="font-size:32px">🦶 ⚽</div><strong>Situasi D</strong><p>Andi menerima bola lalu mengendalikannya agar tidak menjauh.</p><select id="actD"><option value="">Pilih teknik…</option><option value="passing">Passing</option><option value="dribbling">Dribbling</option><option value="shooting">Shooting</option><option value="stopping">Stopping</option></select></div>
+  </div>
+  <button class="btn" id="checkActivity">Periksa jawaban</button> <button class="btn ghost" id="resetActivity">Ulangi</button><div id="activityFeedback" class="feedback hide" aria-live="polite"></div>
+</section>
+<section id="page-kuis" class="page hide">
+  <div class="eyebrow">MODUL 03 • TANTANGAN PEMAIN CERDAS</div><h1>Kuis Hebat Sepak Bola</h1><p>Pilih satu jawaban yang paling tepat. Ada lima pertanyaan. Kerjakan dengan teliti!</p>
+  <form id="quizForm">
+    <div class="question"><strong>1. Apa tujuan utama permainan sepak bola?</strong><label class="option"><input type="radio" name="q1" value="a"> Memasukkan bola ke gawang lawan</label><label class="option"><input type="radio" name="q1" value="b"> Memegang bola selama mungkin</label><label class="option"><input type="radio" name="q1" value="c"> Menjatuhkan pemain lawan</label></div>
+    <div class="question"><strong>2. Teknik mengoper bola kepada teman disebut …</strong><label class="option"><input type="radio" name="q2" value="a"> Shooting</label><label class="option"><input type="radio" name="q2" value="b"> Passing</label><label class="option"><input type="radio" name="q2" value="c"> Dribbling</label></div>
+    <div class="question"><strong>3. Menggiring bola sambil bergerak disebut …</strong><label class="option"><input type="radio" name="q3" value="a"> Stopping</label><label class="option"><input type="radio" name="q3" value="b"> Heading</label><label class="option"><input type="radio" name="q3" value="c"> Dribbling</label></div>
+    <div class="question"><strong>4. Jika teman satu tim berada pada posisi bebas, tindakan yang baik adalah …</strong><label class="option"><input type="radio" name="q4" value="a"> Mengoper bola kepadanya</label><label class="option"><input type="radio" name="q4" value="b"> Menyembunyikan bola</label><label class="option"><input type="radio" name="q4" value="c"> Menendang bola keluar lapangan</label></div>
+    <div class="question"><strong>5. Sikap yang harus ditunjukkan saat bermain adalah …</strong><label class="option"><input type="radio" name="q5" value="a"> Marah ketika kalah</label><label class="option"><input type="radio" name="q5" value="b"> Jujur, sportif, dan bekerja sama</label><label class="option"><input type="radio" name="q5" value="c"> Mengejek teman</label></div>
+    <button class="btn" type="submit">Periksa hasil kuis</button> <button class="btn ghost" type="button" id="resetQuiz">Ulangi kuis</button>
+  </form>
+  <div id="quizResult" class="panel hide" aria-live="polite"></div>
+</section>
+<section id="page-profil" class="page hide">
+  <div class="eyebrow">PUSAT INFORMASI</div><h1>Petunjuk & Profil</h1>
+  <div class="cards">
+    <article class="card"><div class="card-icon">🧭</div><h3>Cara menggunakan</h3><p>Gunakan menu di samping untuk berpindah halaman. Pelajari materi, selesaikan latihan, lalu kerjakan kuis. Isi nama agar hasil belajar lebih personal.</p></article>
+    <article class="card"><div class="card-icon">🎓</div><h3>Identitas pembelajaran</h3><p><strong>Mapel:</strong> PJOK<br><strong>Kelas:</strong> V (Lima)<br><strong>Fase:</strong> C<br><strong>Kurikulum:</strong> Merdeka<br><strong>Materi:</strong> Permainan bola besar – sepak bola</p></article>
+    <article class="card"><div class="card-icon">🏫</div><h3>Pengembang</h3><p>SD Negeri 8 Kodeoha<br>Media Pembelajaran Interaktif (MPI)<br>Tahun pelajaran 2026/2027</p></article>
+  </div>
+  <div class="panel"><h3>Tujuan pembelajaran</h3><p>Setelah menggunakan MPI, peserta didik diharapkan mampu menjelaskan tujuan permainan sepak bola, mengenali teknik dasar passing, dribbling, shooting, dan stopping, memilih tindakan sederhana dalam situasi permainan, serta menunjukkan sikap kerja sama dan sportif.</p><h3>Keselamatan saat praktik</h3><p>Lakukan pemanasan, gunakan lapangan yang aman, periksa kondisi bola dan alas kaki, jaga jarak, serta ikuti arahan guru.</p></div>
+</section>
+<div class="footer">MPI PJOK • SD Negeri 8 Kodeoha • Belajar aktif, sehat, dan sportif ⚽</div>
+</main>
+</div>
+</div>
+<script>
+const pages=['home','materi','latihan','kuis','profil'];
+const lessonData=[
+ {id:'tujuan',emoji:'🥅',tag:'DASAR PERMAINAN',title:'Apa tujuan sepak bola?',desc:'Memasukkan bola ke gawang lawan sebanyak mungkin dan menjaga gawang sendiri agar tidak kebobolan.',points:['Dimainkan oleh dua regu yang saling bertanding.','Pemain bekerja sama untuk menyerang dan bertahan.','Pemain mematuhi aturan dan menghormati semua orang.']},
+ {id:'passing',emoji:'🤝⚽',tag:'TEKNIK 01',title:'Passing – mengoper bola',desc:'Passing adalah mengirim atau mengoper bola kepada teman satu tim. Teknik ini membantu tim bekerja sama.',points:['Gunakan kaki bagian dalam untuk operan pendek.','Arahkan kaki tumpu ke sasaran.','Lihat posisi teman sebelum mengoper.']},
+ {id:'dribbling',emoji:'🏃⚽',tag:'TEKNIK 02',title:'Dribbling – menggiring bola',desc:'Dribbling adalah membawa bola dengan sentuhan kaki secara teratur sambil bergerak.',points:['Sentuh bola perlahan dan berulang.','Gunakan kaki bagian dalam atau luar.','Jaga bola tetap dekat agar mudah dikendalikan.']},
+ {id:'shooting',emoji:'🥅👟',tag:'TEKNIK 03',title:'Shooting – menendang ke gawang',desc:'Shooting adalah menendang bola ke arah gawang untuk mencetak gol.',points:['Perhatikan posisi penjaga gawang.','Kaki tumpu berada di samping bola.','Arahkan tendangan dengan terkontrol.']},
+ {id:'stopping',emoji:'🦶⚽',tag:'TEKNIK 04',title:'Stopping – menghentikan bola',desc:'Stopping adalah menerima dan mengendalikan bola agar berhenti atau mudah dimainkan kembali.',points:['Perhatikan arah datangnya bola.','Gunakan kaki bagian dalam atau telapak kaki sesuai situasi.','Redam gerakan bola dengan sentuhan yang lembut.']}
+];
+let currentLesson=0, done={materi:false,latihan:false,kuis:false}, sound=false;
+const $=id=>document.getElementById(id);
+function showPage(page){pages.forEach(p=>$('page-'+p).classList.toggle('hide',p!==page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
+$('homeBtn').addEventListener('click',()=>showPage('home'));
+function updateProgress(){let n=Object.values(done).filter(Boolean).length;$('progressBar').style.width=(n/3*100)+'%';$('progressText').textContent=n+' dari 3 kegiatan selesai';localStorage.setItem('pjokDone',JSON.stringify(done));}
+try{const saved=JSON.parse(localStorage.getItem('pjokDone'));if(saved)done={...done,...saved};const nm=localStorage.getItem('pjokName');if(nm)$('studentName').value=nm;}catch(e){}
+$('studentName').addEventListener('input',e=>localStorage.setItem('pjokName',e.target.value));updateProgress();
+function renderLesson(){const d=lessonData[currentLesson];$('lessonEmoji').textContent=d.emoji;$('lessonTag').textContent=d.tag;$('lessonTitle').textContent=d.title;$('lessonDesc').textContent=d.desc;$('lessonPoints').innerHTML=d.points.map(x=>'<li>'+x+'</li>').join('');document.querySelectorAll('#lessonTabs button').forEach(b=>b.classList.toggle('active',b.dataset.lesson===d.id));$('nextLesson').textContent=currentLesson===lessonData.length-1?'Kembali ke awal materi ↺':'Materi berikutnya →';}
+document.querySelectorAll('#lessonTabs button').forEach((b,i)=>b.addEventListener('click',()=>{currentLesson=i;renderLesson();}));$('nextLesson').addEventListener('click',()=>{currentLesson=(currentLesson+1)%lessonData.length;renderLesson();});renderLesson();
+$('finishMaterial').addEventListener('click',()=>{done.materi=true;updateProgress();$('finishMaterial').textContent='Materi selesai ✓';});
+$('checkActivity').addEventListener('click',()=>{const answers={actA:'passing',actB:'dribbling',actC:'shooting',actD:'stopping'};let count=0,missing=0;Object.entries(answers).forEach(([id,a])=>{if($(id).value===a)count++;if(!$(id).value)missing++;});const box=$('activityFeedback');box.className='feedback '+(count===4?'good':'bad');box.textContent=missing?'Lengkapi semua pilihan terlebih dahulu.':`Hasilmu ${count} dari 4 jawaban benar. `+(count===4?'Hebat! Kamu sudah mengenali semua teknik dasar.':'Ayo pelajari kembali materi teknik, lalu coba lagi.');box.classList.remove('hide');if(count===4){done.latihan=true;updateProgress();}});
+$('resetActivity').addEventListener('click',()=>{['actA','actB','actC','actD'].forEach(id=>$(id).value='');$('activityFeedback').classList.add('hide');});
+$('quizForm').addEventListener('submit',e=>{e.preventDefault();const key={q1:'a',q2:'b',q3:'c',q4:'a',q5:'b'};let score=0,unanswered=0;Object.entries(key).forEach(([q,a])=>{const chosen=document.querySelector(`input[name="${q}"]:checked`);if(!chosen)unanswered++;else if(chosen.value===a)score++;});if(unanswered){$('quizResult').classList.remove('hide');$('quizResult').innerHTML='<div class="feedback bad">Masih ada '+unanswered+' soal yang belum dijawab. Lengkapi dahulu, ya!</div>';return;}const val=score*20;const name=$('studentName').value.trim()||'Pemain Hebat';$('quizResult').classList.remove('hide');$('quizResult').innerHTML=`<div class="result"><div style="font-size:40px">${val>=80?'🏆':val>=60?'⭐':'💪'}</div><h2>Hasil Kuis ${name}</h2><div class="score">${val}</div><strong>Nilai: ${score} dari 5 jawaban benar</strong><p>${val>=80?'Luar biasa! Kamu memahami materi sepak bola dengan sangat baik.':val>=60?'Bagus! Terus berlatih agar semakin hebat.':'Jangan menyerah. Baca kembali materi dan coba lagi, ya!'}</p></div>`;done.kuis=true;updateProgress();$('quizResult').scrollIntoView({behavior:'smooth',block:'center'});});
+$('resetQuiz').addEventListener('click',()=>{$('quizForm').reset();$('quizResult').classList.add('hide');});
+$('soundBtn').addEventListener('click',()=>{sound=!sound;$('soundBtn').textContent='♫ Suara: '+(sound?'Aktif':'Mati');if(sound&&window.speechSynthesis){const u=new SpeechSynthesisUtterance('Selamat belajar sepak bola. Semangat!');u.lang='id-ID';speechSynthesis.cancel();speechSynthesis.speak(u);}else if(window.speechSynthesis)speechSynthesis.cancel();});
+</script>
+</body>
+</html>
